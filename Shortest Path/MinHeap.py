@@ -8,7 +8,7 @@ class MinHeap:
 
     def __init__(self, array= []):
         self.heap_size = len(array)
-        self.nodes = array
+        self.nodes = array.copy()
         self.hash_node = defaultdict(list)
 
         if self.heap_size > 0:
@@ -115,7 +115,7 @@ class MinHeap:
     HashTable functions
     """
     def hash_key(self, value):
-        return value % 11
+        return int(value) % 11
 
     def find_hash(self, value):
         hash_list = self.hash_node[self.hash_key(value)]
