@@ -1,6 +1,6 @@
 from collections import defaultdict
 import sys
-
+import math
 class Graph:
 
     class Node:
@@ -45,9 +45,46 @@ class Graph:
         self.nodes.append(self.Node(vertex_id, vertex_lat, vertex_long))
 
     def add_edge(self, v1, v2, weight: int):
-        self.adjacency_list[v1.id].append((v2, weight))
-        self.adjacency_list[v2.id].append((v1, weight))
+        traffic = 0
+        self.adjacency_list[v1.id].append([v2, weight, traffic])
+        self.adjacency_list[v2.id].append([v1, weight, traffic])
 
     def get_vertex_neighbors(self, vertex):
         if vertex in self.nodes:
             return self.adjacency_list[vertex.id]
+
+    def get_edge(self, v1, v2):
+        v1_neighbors = self.get_vertex_neighbors(v1)
+        if v1_neighbors:
+            for neighbor in v1_neighbors:
+                if neighbor[0] == v2:
+                    return neighbor
+    
+    def calculate_edge_weight(self, edge, distance, traffic_factor=0.3):
+        if edge:
+            traffic = edge[2]
+            weight = distance + (1 + traffic_factor * traffic)
+            edge[1] = weight
+
+    def increase_edge_traffic(self, v1, v2):
+        edge1 = edge = self.get_edge(v1, v2)
+        edge2 = edge = self.get_edge(v2, v1)
+        if edge1 and edge2:
+            edge1[2] += 1
+            edge2[2] += 1
+            distance = self.get_Euclidean_distance(v1, v2)
+            self.calculate_edge_weight(edge1, distance)
+            self.calculate_edge_weight(edge2, distance)
+
+    def decrease_edge_traffic(self, v1, v2):
+        edge1 = edge = self.get_edge(v1, v2)
+        edge2 = edge = self.get_edge(v2, v1)
+        if edge1 and edge2 and edge1[2] + edge2[2] >= 2:
+            edge1[2] -= 1
+            edge2[2] -= 1
+            distance = self.get_Euclidean_distance(v1, v2)
+            self.calculate_edge_weight(edge1, distance)
+            self.calculate_edge_weight(edge2, distance)
+
+    def get_Euclidean_distance(self, v1, v2):
+        return math.sqrt((v1.lat - v2.lat) ** 2 + (v1.long - v2.long) ** 2)
