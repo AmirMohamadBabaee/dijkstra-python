@@ -44,10 +44,24 @@ class Graph:
     def add_vertex(self, vertex_id, vertex_lat, vertex_long):
         self.nodes.append(self.Node(vertex_id, vertex_lat, vertex_long))
 
-    def add_edge(self, v1, v2, weight: int):
+    def add_edge_by_node(self, v1, v2, weight: int):
         traffic = 0
         self.adjacency_list[v1.id].append([v2, weight, traffic])
         self.adjacency_list[v2.id].append([v1, weight, traffic])
+
+    def add_edge_by_id(self, v1_id, v2_id, weight=None):
+        v1 = self.get_vertex(v1_id)
+        v2 = self.get_vertex(v2_id)
+
+        if v1 and v2:
+            if not weight:
+                weight = self.get_Euclidean_distance(v1, v2)
+            self.add_edge_by_node(v1, v2, weight)
+
+    def get_vertex(self, id):
+        for node in self.nodes:
+            if node.id == id:
+                return node
 
     def get_vertex_neighbors(self, vertex):
         if vertex in self.nodes:
