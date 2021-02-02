@@ -35,7 +35,7 @@ class Graph:
             return self.id
 
         def __repr__(self):
-                return '(' + str(self.id) + ', ' + str(self.dist) + ', ' + str(self.prev) + ')'
+                return '(' + str(self.id) + ', ' + str(self.dist) + ')'
 
     def __init__(self, nodes= list()):
         self.nodes = nodes
@@ -77,12 +77,12 @@ class Graph:
     def calculate_edge_weight(self, edge, distance, traffic_factor=0.3):
         if edge:
             traffic = edge[2]
-            weight = distance + (1 + traffic_factor * traffic)
+            weight = distance * (1 + traffic_factor * traffic)
             edge[1] = weight
 
     def increase_edge_traffic(self, v1, v2):
-        edge1 = edge = self.get_edge(v1, v2)
-        edge2 = edge = self.get_edge(v2, v1)
+        edge1 = self.get_edge(v1, v2)
+        edge2 = self.get_edge(v2, v1)
         if edge1 and edge2:
             edge1[2] += 1
             edge2[2] += 1
@@ -91,8 +91,8 @@ class Graph:
             self.calculate_edge_weight(edge2, distance)
 
     def decrease_edge_traffic(self, v1, v2):
-        edge1 = edge = self.get_edge(v1, v2)
-        edge2 = edge = self.get_edge(v2, v1)
+        edge1 = self.get_edge(v1, v2)
+        edge2 = self.get_edge(v2, v1)
         if edge1 and edge2 and edge1[2] + edge2[2] >= 2:
             edge1[2] -= 1
             edge2[2] -= 1
@@ -102,3 +102,24 @@ class Graph:
 
     def get_Euclidean_distance(self, v1, v2):
         return math.sqrt((v1.lat - v2.lat) ** 2 + (v1.long - v2.long) ** 2)
+
+    def get_path(self, start, end):
+        path = []
+        temp = end
+        while temp:
+            path.append(temp)
+            if temp == start:
+                break
+            temp = temp.prev
+        return path
+
+    def calculate_time(self, path_pair):
+        sum = 0
+        for pair in path_pair:
+            edge = self.get_edge(*pair)
+            sum += edge[1]
+        return sum * 120
+
+    def reset_dist_nodes(self):
+        for node in self.nodes:
+            node.dist = sys.maxsize
