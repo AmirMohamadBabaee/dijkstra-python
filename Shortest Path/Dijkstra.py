@@ -12,7 +12,7 @@ def dijkstra(graph: Graph, source: Graph.Node, destination: Graph.Node):
         neighbors = graph.get_vertex_neighbors(v)
         if neighbors:
             for neighbor in neighbors:
-                w, weight = neighbor
+                w, weight, _ = neighbor
                 if v.dist + weight < w.dist:
                     w.dist = v.dist + weight
                     w.prev = v
