@@ -76,7 +76,6 @@ class MinHeap:
     def build_min_heap(self):
         for position in range(self.heap_size//2, 0, -1):
             self.min_heapify_top_down(position - 1)
-            print(position)
 
 
     """
