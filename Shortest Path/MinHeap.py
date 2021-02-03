@@ -50,14 +50,10 @@ class MinHeap:
         right_index = self.right(root_index)
         least = root_index
 
-        # print('node =', root_index , 'value =', self.nodes[root_index])
-
         if left_index < self.heap_size and self.nodes[left_index] < self.nodes[root_index]:
-            # print('left =', left_index , 'value =', self.nodes[left_index])
             least = left_index
 
         if right_index < self.heap_size and self.nodes[right_index] < self.nodes[least]:
-            # print('right =', right_index , 'value =', self.nodes[right_index])
             least = right_index
 
         if least != root_index:
@@ -149,6 +145,9 @@ class MinHeap:
     """
     def __repr__(self):
         return self.nodes.__repr__()
+
+    def __len__(self):
+        return self.nodes.__len__()
 
 
         
