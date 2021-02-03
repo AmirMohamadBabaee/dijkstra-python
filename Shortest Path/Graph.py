@@ -5,12 +5,13 @@ class Graph:
 
     class Node:
 
-        def __init__(self, id, lat, long, dist=sys.maxsize, prev=None):
+        def __init__(self, id, lat, long, dist=sys.maxsize, prev=None, time=0):
             self.id = id
             self.lat = lat
             self.long = long
             self._dist = dist
             self._prev = prev
+            self._time = time
 
         @property
         def dist(self):
@@ -27,6 +28,14 @@ class Graph:
         @prev.setter
         def prev(self, value):
             self._prev = value
+
+        @property
+        def time(self):
+            return self._time
+
+        @time.setter
+        def time(self, value):
+            self._time = value
 
         def __lt__(self, obj):
             return self.dist < obj.dist
@@ -111,7 +120,7 @@ class Graph:
             if temp == start:
                 break
             temp = temp.prev
-        return path
+        return path[::-1]
 
     def calculate_time(self, path_pair):
         sum = 0
@@ -120,6 +129,18 @@ class Graph:
             sum += edge[1]
         return sum * 120
 
+    def calculate_time_list(self, path_pair):
+        times = []
+        for pair in path_pair:
+            pair[1].time = pair[0].time + self.calculate_time_vertex(*pair)
+            times.append(pair[1].time)
+        return times
+
+    def calculate_time_vertex(self, v1, v2):
+        edge = self.get_edge(v1, v2)
+        return edge[1] * 120
+
     def reset_dist_nodes(self):
         for node in self.nodes:
             node.dist = sys.maxsize
+            node.time = 0
